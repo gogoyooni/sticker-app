@@ -1,16 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 import Button from "./components/Button";
 import ImageViewer from "./components/ImageViewer";
-import IconButton from "./components/IconButton"
-import CircleButton from "./components/CircleButton"
+import IconButton from "./components/IconButton";
+import CircleButton from "./components/CircleButton";
 
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
+import EmojiPicker from "./components/EmojiPicker";
 
-import {useState} from "react";
+import { useState } from "react";
 
 export default function App() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [showAppOptions, setShowAppOptions] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
@@ -19,7 +21,11 @@ export default function App() {
   };
 
   const onAddSticker = () => {
-    // we will implement this later
+    setIsModalVisible(true);
+  };
+
+  const onModalClose = () => {
+    setIsModalVisible(false);
   };
 
   const onSaveImageAsync = async () => {
@@ -37,29 +43,47 @@ export default function App() {
       setShowAppOptions(true);
       // console.log(result);
     } else {
-      alert('You did not select any image.');
+      alert("You did not select any image.");
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageViewer placeholderImageSource={require("./assets/images/background-image.png")} selectedImage={selectedImage} />
+        <ImageViewer
+          placeholderImageSource={require("./assets/images/background-image.png")}
+          selectedImage={selectedImage}
+        />
       </View>
-      {
-        showAppOptions ? (<View style={styles.optionsContainer}>
-        <View style={styles.optionsRow}>
-          <IconButton icon="refresh" label="Reset" onPress={onReset} />
-          <CircleButton onPress={onAddSticker} />
-          <IconButton icon="save-alt" label="Save" onPress={onSaveImageAsync} />
+      {showAppOptions ? (
+        <View style={styles.optionsContainer}>
+          <View style={styles.optionsRow}>
+            <IconButton icon="refresh" label="Reset" onPress={onReset} />
+            <CircleButton onPress={onAddSticker} />
+            <IconButton
+              icon="save-alt"
+              label="Save"
+              onPress={onSaveImageAsync}
+            />
+          </View>
         </View>
-      </View> ): (<View style={styles.footerContainer}>
-          <Button theme="primary" label="Choose a photo" onPress={pickImageAsync}/>
-          <Button label="Use this photo" onPress={() => setShowAppOptions(true)}/>
-        </View>)
-      }
-      
-      
+      ) : (
+        <View style={styles.footerContainer}>
+          <Button
+            theme="primary"
+            label="Choose a photo"
+            onPress={pickImageAsync}
+          />
+          <Button
+            label="Use this photo"
+            onPress={() => setShowAppOptions(true)}
+          />
+        </View>
+      )}
+      <EmojiPicker
+        isVisible={isModalVisible}
+        onClose={onModalClose}
+      ></EmojiPicker>
       <StatusBar style="auto" />
     </View>
   );
@@ -68,28 +92,28 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#25292e',
-    alignItems: 'center',
+    backgroundColor: "#25292e",
+    alignItems: "center",
   },
   imageContainer: {
     flex: 1,
     paddingTop: 58,
   },
-  image : {
+  image: {
     width: 320,
     height: 440,
     borderRadius: 18,
   },
   footerContainer: {
     flex: 1 / 3,
-    alignItems: 'center',
+    alignItems: "center",
   },
   optionsContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 80,
   },
   optionsRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    flexDirection: "row",
   },
 });
